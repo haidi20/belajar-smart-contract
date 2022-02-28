@@ -1,6 +1,9 @@
-from solcx import compile_standard, install_solc
-import json
+import json, os
+from dotenv import load_dotenv
 from web3 import Web3
+from solcx import compile_standard, install_solc
+
+load_dotenv()
 
 install_solc("0.6.0")
 with open("./SimpleStorage.sol", "r") as file:
@@ -34,15 +37,14 @@ with open("compiled_code.json", "w") as file:
 byteCode = compiled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["evm"][
     "bytecode"
 ]["object"]
-
 # get abi
 abi = compiled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["abi"]
 
 # connect to ganache
 w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
 chain_id = 1337
-my_address = "0x605c8D83161E220a036675A933b5Ab41dd23Fa35"
-private_key = "2f8fb03f6918b8cd9d057279a319e28882278e6cff0d9dcc97da5a1df5f81a59"
+my_address = os.getenv("MY_ADDRESS")
+private_key = os.getenv("PRIVATE_KEY")
 
 # Create contract in python
 SimpleStorage = w3.eth.contract(abi=abi, bytecode=byteCode)
@@ -62,4 +64,17 @@ transaction = SimpleStorage.constructor().buildTransaction(
     }
 )
 
-print(transaction)
+signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
+
+# Send this signed transaction
+tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+
+# Working with contract, you need:
+# Contract ABI
+# Contract Address
+simple_storage = w3.eth.contract(address=tx_receipt.contractAddress, abi=abi)
+# Call -> Simulate making the call and getting a return value
+# Transact -> Actually make a state change
+print(simple_storage.functions.store(15).call())
+print(simple_storage.functions.getVal().call())
