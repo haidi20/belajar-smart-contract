@@ -40,9 +40,9 @@ byteCode = compiled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["evm"
 # get abi
 abi = compiled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["abi"]
 
-# connect to ganache
-w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:7545"))
-chain_id = 1337
+# connect to Rinkeby
+w3 = Web3(Web3.HTTPProvider(os.getenv("END_POINT")))
+chain_id = 4
 my_address = os.getenv("MY_ADDRESS")
 private_key = os.getenv("PRIVATE_KEY")
 
