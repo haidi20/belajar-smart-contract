@@ -1,16 +1,21 @@
-import { useState } from 'react'
-import './main.css'
+import { useState } from 'react';
+import {Footer, Navbar, Services, Transactions, Welcome} from './components/index';
 
 const App = () => {
   const [count, setCount] = useState(0);
 
   return (
-    <div className="flex justify-center">
-      <h1 className="font-bold text-2xl bg-blue-600">
-        React and Tailwind with Vitejs! test
-      </h1>
+    <div className="h-min-screen">
+      <div className="gradient-bg-welcome">
+          <Navbar />
+          <Welcome />
+      </div>
+
+      <Services />
+      <Transactions />
+      <Footer />
     </div>
-  )
+  );
 }
 
 export default App
