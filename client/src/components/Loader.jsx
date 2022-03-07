@@ -3,8 +3,10 @@ import React from "react";
 const Loader = () => {
 
     return (
-        <div>
-            <h1>Loader</h1>
+        <div className="flex justify-center items-center py-3">
+            <div className="animate-spin rounded-full border-b-2 border-blue-700 h-16 w-16 ">
+
+            </div>
         </div>
     );
 }
